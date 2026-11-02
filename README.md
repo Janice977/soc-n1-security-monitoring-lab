@@ -1,67 +1,125 @@
-# SOC N1 — Security Monitoring Lab
+#  SOC N1 — Security Monitoring Lab
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue) ![Status](https://img.shields.io/badge/Status-Laborat%C3%B3rio%20educacional-informational)
+![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white) ![SOC](https://img.shields.io/badge/SOC-N1-1F2937) ![Blue Team](https://img.shields.io/badge/Blue_Team-Laborat%C3%B3rio-2563EB) ![Dados](https://img.shields.io/badge/Dados-Simulados-0F766E)
 
-**Laboratório prático e reproduzível de triagem de alertas de autenticação usando Python e logs fictícios.**
+**Laboratório educacional de monitoramento de eventos de autenticação, detecção de padrões suspeitos e triagem inicial de alertas, desenvolvido em Python.**
 
-## Objetivo
+> **Escopo:** projeto de portfólio com dados fictícios. Não representa atuação em um SOC de produção, detecção validada em ambiente real ou integração com plataformas SIEM/EDR.
 
-Demonstrar habilidades introdutórias de um SOC N1: leitura de eventos, identificação de padrões suspeitos, registro de evidências, avaliação preliminar de risco e preparação de escalonamento. **Não representa atuação em SOC real nem detecção validada para produção.**
+##  Objetivo
 
-## Funcionamento
+Exercitar atividades introdutórias de **Analista de Segurança da Informação / SOC N1**, incluindo:
 
-O script analisa um CSV de autenticações e gera um alerta **SOC-001** quando encontra **cinco falhas de login em cinco minutos** para um mesmo IP de origem, usuário e host. Os registros são ordenados por timestamp, e o resultado vai para `outputs/alertas.csv`. A regra gera somente o primeiro alerta por combinação IP/usuário/host em cada execução para evitar repetições.
+- Leitura e organização de logs de autenticação;
+- Identificação de eventos repetitivos em uma janela temporal;
+- Geração e interpretação de alerta;
+- Registro de evidências e hipóteses de análise;
+- Documentação de incidente simulado e critérios de escalonamento.
 
-O conjunto de exemplo foi preparado com endereços IP reservados para documentação (RFC 5737). **Não são dados reais**.
+##  Cenário de detecção
 
-## Comece em 2 passos
+O script lê os eventos em `logs/eventos-simulados.csv`, ordena-os pelo horário e procura **cinco falhas de login em cinco minutos** para a mesma combinação de **IP de origem, usuário e host**.
 
-Requisitos: Python 3.9+ (sem pacotes adicionais).
+Quando a condição é satisfeita, é gerado o alerta **SOC-001** em `outputs/alertas.csv`. A regra foi desenhada para gerar apenas o primeiro alerta por combinação IP/usuário/host em cada execução.
+
+| Item | Exemplo documentado |
+| --- | --- |
+| Tipo de evento | Falhas repetidas de autenticação |
+| Regra | 5 falhas em 5 minutos |
+| IP de origem | `198.51.100.23` |
+| Usuário | `admin` |
+| Host | `web-01` |
+| Saída esperada para os dados de exemplo | 1 alerta `SOC-001` |
+
+O endereço IP pertence a uma faixa reservada para documentação (RFC 5737). O exemplo **não contém IP ou credenciais de usuários reais**.
+
+##  Como reproduzir o laboratório
+
+**Requisito:** Python 3.9 ou superior, sem dependências adicionais.
+
+1. Baixe o repositório ou clone-o localmente.
+2. Abra um terminal na pasta principal do projeto.
+3. Execute a análise e os testes:
 
 ```bash
 python scripts/analisar_logs.py
 python -m unittest discover -s tests -v
 ```
 
-Saída esperada do exemplo: **1 alerta**, envolvendo o IP `198.51.100.23`, usuário `admin` e host `web-01`. Leia `outputs/alertas.csv` após executar o script.
+**Windows:** se o comando `python` não funcionar, tente o inicializador `py` (caso esteja instalado):
 
-## Estrutura
+```powershell
+py scripts/analisar_logs.py
+py -m unittest discover -s tests -v
+```
+
+Consulte o arquivo `outputs/alertas.csv` para verificar a saída. O exemplo do projeto documenta a geração de **um alerta** para o cenário simulado. Esse resultado precisa ser confirmado na execução local.
+
+##  Estrutura
 
 ```text
 soc-n1-security-monitoring-lab/
 ├── README.md
-├── logs/eventos-simulados.csv
-├── scripts/analisar_logs.py
-├── deteccoes/regras-de-deteccao.md
-├── incidentes/relatorio-incidente-001.md
-├── docs/guia-de-uso.md
-├── tests/test_analisar_logs.py
-└── outputs/alertas.csv
+├── logs/
+│   └── eventos-simulados.csv
+├── scripts/
+│   └── analisar_logs.py
+├── deteccoes/
+│   └── regras-de-deteccao.md
+├── incidentes/
+│   └── relatorio-incidente-001.md
+├── docs/
+│   └── guia-de-uso.md
+├── tests/
+│   └── test_analisar_logs.py
+└── outputs/
+    └── alertas.csv
 ```
 
-## Metodologia e limitações
+##  Fluxo de triagem SOC N1
 
-1. **Coleta demonstrativa:** eventos de autenticação criados para o projeto.
-2. **Detecção:** falhas repetidas em janela temporal móvel, agrupadas por IP, usuário e host.
-3. **Triagem:** leitura do alerta, checagem contextual e correlação manual com sucesso posterior.
-4. **Documentação:** relatório fictício INC-001 com evidências e hipóteses.
-5. **Escalonamento:** somente recomendações, sem ações em sistemas reais.
+1. **Coleta:** interpretar os eventos fictícios de autenticação.
+2. **Detecção:** verificar padrões de falhas repetidas para IP, usuário e host.
+3. **Validação:** conferir horários, agrupamento e contexto do alerta.
+4. **Investigação preliminar:** considerar hipóteses legítimas (por exemplo, erro de senha) e suspeitas; verificar manualmente se há sucesso posterior.
+5. **Registro:** documentar evidências, limitações e ações recomendadas no relatório simulado.
+6. **Escalonamento:** indicar quando seria necessária uma análise adicional, sem agir sobre sistemas reais.
 
-Falsos positivos são possíveis; falhas repetidas não provam tentativa maliciosa. A regra não identifica ataque distribuído, não infere comprometimento e não se integra a SIEM, EDR ou redes reais.
-
-## Para explorar
+**Documentação relacionada:**
 
 - [Guia de uso](docs/guia-de-uso.md)
 - [Regra de detecção](deteccoes/regras-de-deteccao.md)
-- [Incidente simulado](incidentes/relatorio-incidente-001.md)
-- [Logs de exemplo](logs/eventos-simulados.csv)
+- [Relatório de incidente simulado](incidentes/relatorio-incidente-001.md)
+- [Logs fictícios](logs/eventos-simulados.csv)
 
-## Próximas melhorias
+##  Competências demonstradas pelo projeto
 
-- Criar regras adicionais com testes (por exemplo, autenticação fora do horário esperado com contexto explícito).
-- Incluir métricas e gráficos locais com dados sintéticos.
-- Evoluir para ferramentas gratuitas de monitoramento somente em laboratório isolado e autorizado.
+| Área | Evidência no repositório |
+| --- | --- |
+| Análise inicial de logs | Conjunto fictício de autenticações em CSV |
+| Detecção por regra | Script Python e especificação de regra |
+| Triagem e documentação | Relatório de incidente simulado |
+| Testes de software | Testes com `unittest` |
+| Organização técnica | Separação de scripts, documentação, logs e saídas |
 
-## Aviso
+##  Limitações
 
-Projeto educacional de portfólio, com dados inteiramente fictícios. Não execute testes em sistemas de terceiros sem autorização. Não há dados pessoais reais no conjunto de exemplo.
+Falhas repetidas **não comprovam ataque**, e a regra pode produzir falsos positivos. Este protótipo não detecta tentativas distribuídas, não confirma comprometimento e não se conecta a SIEM, EDR ou sistemas reais. O relatório de incidente representa uma **simulação educacional**, não um incidente investigado profissionalmente.
+
+##  Próximas melhorias planejadas
+
+- Acrescentar um segundo cenário sintético de detecção com testes próprios;
+- Criar métricas simples e gráficos locais a partir dos dados simulados;
+- Adicionar exemplos documentados de falsos positivos e critérios de escalonamento;
+- Experimentar uma ferramenta gratuita de monitoramento **somente em laboratório isolado e autorizado**.
+
+##  Autoria e portfólio
+
+Projeto de aprendizagem e evolução profissional de **Janice Lira**, voltado ao desenvolvimento de competências introdutórias em Segurança da Informação e SOC N1.
+
+- [Perfil GitHub](https://github.com/Janice977)
+- [LinkedIn](https://www.linkedin.com/in/janicelira)
+
+---
+
+**Uso educacional:** todos os dados de exemplo são fictícios. Não realizar testes em serviços ou sistemas de terceiros sem autorização.
