@@ -22,6 +22,8 @@ O script lê os eventos em `logs/eventos-simulados.csv`, ordena-os pelo horário
 
 Quando a condição é satisfeita, é gerado o alerta **SOC-001** em `outputs/alertas.csv`. A regra foi desenhada para gerar apenas o primeiro alerta por combinação IP/usuário/host em cada execução.
 
+A regra **SOC-002** correlaciona as mesmas cinco falhas com um **login bem-sucedido dentro de cinco minutos**, para o mesmo IP, usuário e host. A janela se reinicia após o sucesso. O cenário fictício original contém ambas as ocorrências.
+
 | Item | Exemplo documentado |
 | --- | --- |
 | Tipo de evento | Falhas repetidas de autenticação |
@@ -29,7 +31,7 @@ Quando a condição é satisfeita, é gerado o alerta **SOC-001** em `outputs/al
 | IP de origem | `198.51.100.23` |
 | Usuário | `admin` |
 | Host | `web-01` |
-| Saída esperada para os dados de exemplo | 1 alerta `SOC-001` |
+| Saída esperada para os dados de exemplo | 2 alertas: `SOC-001` e `SOC-002` |
 
 O endereço IP pertence a uma faixa reservada para documentação (RFC 5737). O exemplo **não contém IP ou credenciais de usuários reais**.
 
@@ -53,7 +55,7 @@ py scripts/analisar_logs.py
 py -m unittest discover -s tests -v
 ```
 
-Consulte o arquivo `outputs/alertas.csv` para verificar a saída. O exemplo do projeto documenta a geração de **um alerta** para o cenário simulado. Esse resultado precisa ser confirmado na execução local.
+Consulte o arquivo `outputs/alertas.csv` para verificar a saída. O exemplo do projeto documenta a geração de **dois alertas** para o cenário simulado. Esse resultado foi confirmado nos testes locais.
 
 ##  Estrutura
 
@@ -67,7 +69,8 @@ soc-n1-security-monitoring-lab/
 ├── deteccoes/
 │   └── regras-de-deteccao.md
 ├── incidentes/
-│   └── relatorio-incidente-001.md
+│   ├── relatorio-incidente-001.md
+│   └── relatorio-incidente-002.md
 ├── docs/
 │   └── guia-de-uso.md
 ├── tests/
@@ -89,7 +92,8 @@ soc-n1-security-monitoring-lab/
 
 - [Guia de uso](docs/guia-de-uso.md)
 - [Regra de detecção](deteccoes/regras-de-deteccao.md)
-- [Relatório de incidente simulado](incidentes/relatorio-incidente-001.md)
+- [Relatório SOC-001](incidentes/relatorio-incidente-001.md)
+- [Relatório SOC-002](incidentes/relatorio-incidente-002.md)
 - [Logs fictícios](logs/eventos-simulados.csv)
 
 ##  Competências demonstradas pelo projeto
@@ -108,7 +112,7 @@ Falhas repetidas **não comprovam ataque**, e a regra pode produzir falsos posit
 
 ##  Próximas melhorias planejadas
 
-- Acrescentar um segundo cenário sintético de detecção com testes próprios;
+- Refinar a correlação dos alertas SOC-001 e SOC-002 e suas hipóteses de falsos positivos;
 - Criar métricas simples e gráficos locais a partir dos dados simulados;
 - Adicionar exemplos documentados de falsos positivos e critérios de escalonamento;
 - Experimentar uma ferramenta gratuita de monitoramento **somente em laboratório isolado e autorizado**.

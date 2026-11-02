@@ -1,2 +1,3 @@
 timestamp,rule_id,severity,source_ip,username,host,failure_count,description
 2026-10-20T09:01:00Z,SOC-001,medium,198.51.100.23,admin,web-01,5,5 ou mais falhas de login em 5 minutos
+2026-10-20T09:02:00Z,SOC-002,high,198.51.100.23,admin,web-01,5,Login bem-sucedido após 5 falhas em até 5 minutos
